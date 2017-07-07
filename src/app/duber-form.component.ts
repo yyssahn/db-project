@@ -14,6 +14,7 @@ export class DuberFormComponent {
   state;
   lat;
   long;
+  storeList;
   constructor(private formBuilder: FormBuilder,
   private duberLocationService : DuberLocationService){
   }
@@ -35,13 +36,16 @@ export class DuberFormComponent {
 
 
   onSubmit(value){
-    console.log("submit button pressed");
-    console.log(value);
-    this.duberLocationService.getState(value.zipcode).then(result=>{
-      this.state = result.state;
-      this.lat = result.lat;
-      this.long = result.long;
-    });
+      this.duberLocationService.getState(value.zipcode).then(result=>{
+        this.state = result.state;
+        this.lat = result.lat;
+        this.long = result.long;
+        this.duberLocationService.getStoresByState(this.state).then(result=>{
+          this.storeList = result;
+
+          this.duberLocationService.getStoresCloseBy(this.lat,this.long,this.storeList);
+          });
+        });
 
 
   }
