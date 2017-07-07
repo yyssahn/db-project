@@ -1,1 +1,26 @@
-<div> duber form placeholder </div>
+<div class="container">
+  <form class="duber-form"
+  [formGroup]="duberForm"
+  (ngSubmit)="onSubmit(duberForm.value)">
+      <label for="zipcode">Zip Code </label>
+      <input type="text" name="zipcode" id="zipcode" formControlName="zipcode" >
+
+      <label for="Budget">Budget </label>
+      <input type="text" name="budget" id="budget" formControlName="budget">
+
+  <button class="submit-button" [disabled]="!duberForm.valid">Search</button>
+  </form>
+  <div *ngIf="duberForm.controls.zipcode.errors?.required">
+    You zip code is empty
+  </div>
+  <div *ngIf="duberForm.controls.zipcode.errors?.pattern">
+    You zip code is not valid
+  </div>
+  <div *ngIf="duberForm.controls.budget.errors?.pattern">
+    You entered the non-number in your budget
+  </div>
+  <div *ngIf="duberForm.controls.budget.errors?.required">
+    Your budget field is empty
+  </div>
+
+</div>

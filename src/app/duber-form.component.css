@@ -1,0 +1,30 @@
+.duber-form{
+  background-color:white;
+  border: 1px solid lightgrey;
+  padding:5px;
+  color:#2B8425;
+}
+
+
+.container {
+  background-color: rgba(0,0,0,0.07);
+  margin:10%;
+  padding:5px;
+}
+.zipcode-section{
+  float:left;
+  width:40%;
+}
+.budget-section{
+  float:left;
+  width:40%;
+}
+
+.submit-button{
+  background-color: #2B8425;
+  color:white;
+  height:21px;
+  width:20%;
+  border:0;
+  padding:0;
+}
