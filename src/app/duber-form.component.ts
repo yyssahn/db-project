@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { DuberLocationService } from './duber-location.service'
 
 @Component({
   selector:'db-form',
@@ -10,8 +11,11 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 
 export class DuberFormComponent {
   duberForm;
-
-  constructor(private formBuilder: FormBuilder){
+  state;
+  lat;
+  long;
+  constructor(private formBuilder: FormBuilder,
+  private duberLocationService : DuberLocationService){
   }
 
   ngOnInit(){
@@ -33,6 +37,12 @@ export class DuberFormComponent {
   onSubmit(value){
     console.log("submit button pressed");
     console.log(value);
+    this.duberLocationService.getState(value.zipcode).then(result=>{
+      this.state = result.state;
+      this.lat = result.lat;
+      this.long = result.long;
+    });
+
 
   }
 
