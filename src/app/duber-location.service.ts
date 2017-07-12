@@ -20,9 +20,11 @@ export class DuberLocationService{
   parseLocation(response){
     var returnArray;
     var state="";
+    var city="";
     var lat="";
     var long="";
     var address_component;
+
     if (response.results.length > 0){
       address_component = response.results[0].address_components;
       for (let component of address_component){
@@ -30,12 +32,15 @@ export class DuberLocationService{
         if (state == "" && type=="administrative_area_level_1") {
           state = component.short_name;
         }
+        if (city == "" && type=="locality") {
+          city = component.short_name;
+        }
       }
       var geoComponents = response.results[0].geometry;
       lat = geoComponents.location.lat;
       long = geoComponents.location.lng;
     }
-    returnArray = returnArray= {"state" : state, "lat" : lat, "long" : long};
+    returnArray = returnArray= {"state" : state,"city" :city, "lat" : lat, "long" : long};
     return returnArray;
 
   }
@@ -49,32 +54,88 @@ export class DuberLocationService{
     var id;
     var address;
     var city;
+    var zipcode;
     for (let store of response){
-      id = store.id;
-      address = store.address;
-      city = store.city;
-      returnArray.push({"id":id,"address":address,"city":city});
+      if(store.address!="Unknown" && store.zip_code!="" && !(store.zip_code === null)){
+        id = store.id;
+        address = store.address;
+        city = store.city;
+        zipcode = store.zip_code;
+        returnArray.push({"id":id,"address":address,"city":city , "zipcode":zipcode});
+      }
     }
+
     return returnArray;
   }
 
-  getStoresCloseBy(lat, long, storeList){
-    var destination_query = storeList[0].address + "," + storeList[0].city;
-    console.log(destination_query);
-    for (var _i = 1; _i < 10; _i++){
-      destination_query = destination_query + "|" + storeList[_i].address + "," + storeList[_i].city;
+  getStoresCloseBy(lat, long,  city,zipcode, storeList){
+    var filterArray= [];
+
+    this.getStoreByZipcode(zipcode, storeList, filterArray);
+    this.getStoreByCity(city, storeList, filterArray);
+
+    var destination_query = `${filterArray[0].address} , ${filterArray[0].city}`;
+    for (var _i = 1; _i < filterArray.length; _i++){
+      destination_query = destination_query + `| ${filterArray[_i].address} , ${filterArray[_i].city}`;
     }
-    console.log(destination_query);
-    var query = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=47.7393027,-122.3435336&destinations=5809%20112TH%20ST%20E%20BLDG%20B,PUYALLUP|5809%20112TH%20ST%20E%20BLDG%20B,PUYALLUP|5200%20172ND%20ST%20NE%20F-101,ARLINGTON|3005%20NORTHVIEW%20CIRCLE,SHELTON|4264%20PACIFIC%20HWY,BELLINGHAM|2018%20IRON%20ST%20STE%20A,BELLINGHAM|1615%20BASIN%20ST%20SW,EPHRATA|5655%20GUIDE%20MERIDIAN%20STE%20A,BELLINGHAM|3598%20BETHEL%20RD%20SE,PORT%20ORCHARD|18729%20FIR%20ISLAND%20RD%20STE%20C,MOUNT%20VERNON|17517%2015th%20Ave%20NE%20#202,Shoreline&key=AIzaSyABFzbmnvMJT_r9a7OaHLD7Z5oTeHkvyyo';
+    var url =  "https://maps.googleapis.com/maps/api/distancematrix/json?";
+
     let params = new URLSearchParams();
     params.set('units', 'imperial');
     params.set('origins', lat + ',' + long);
     params.set('destinations', destination_query);
     params.set('key', 'AIzaSyABFzbmnvMJT_r9a7OaHLD7Z5oTeHkvyyo');
-    //return this.jsonp.get('https://maps.googleapis.com/maps/api/distancematrix/json', { search: params }).map(response => response);
+    return this.http.get(url, {search:params}).toPromise().then(response=>this.getStoresinmiles(response.json(),filterArray));
   }
 
+  getStoreByZipcode(zipcode, storeList,filterArray){
+
+    for (let store of storeList){
+      if(filterArray.length >=25){
+        return;
+      }
 
 
+      if (store.zipcode == zipcode){
+
+        filterArray.push(store);
+      }
+    }
+    return;
+  }
+
+  getStoreByCity(city, storeList,filterArray){
+
+    for (let store of storeList){
+      if(filterArray.length >=25){
+        return;
+      }
+      if (store.city == city){
+
+        filterArray.push(store);
+      }
+    }
+    return;
+
+  }
+
+  getStoresinmiles(response,storeList){
+
+    var returnArray = [];
+
+    for (var _i =0; _i < storeList.length; _i++){
+      if(returnArray.length >=3){
+
+        return returnArray;
+      }
+      if (response.rows[0].elements[_i].distance.value < 32187){
+
+        returnArray.push(storeList[_i]);
+      }
+
+    }
+    return returnArray;
+
+  }
 
 }
