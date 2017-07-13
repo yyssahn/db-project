@@ -25,7 +25,8 @@ import { DuberProductSearchService } from './duber-product-search.service';
     DuberProductList
    ],
    providers: [
-    DuberLocationService
+    DuberLocationService,
+    DuberProductSearchService
    ],
   bootstrap:    [ AppComponent ]
 })

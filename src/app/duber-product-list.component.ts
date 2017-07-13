@@ -4,27 +4,37 @@ import { DuberProductSearchService } from './duber-product-search.service';
 
 @Component({
   selector:'db-product-list',
-  template: `{{ locationList[0].address }}`
+  template: `{{ 'hello' }}`
 })
 
 export class DuberProductList{
 
 
     @Input() locationList;
+    @Input() budget;
     oldLocationList;
     storeListSize;
     storeListCount;
 
     constructor(
-    private duberProductSearchService : DuberProductSearchService){
+      private duberProductSearchService : DuberProductSearchService){
     }
 
-    ngDoCheck(){
-    if(this.locationList !== this.oldLocationList){
-        this.storeListSize = this.locationList.length;
-        this.storeListCount = 0;
 
-        this.oldLocationList = this.locationList;
+    ngOnChanges(changes) {
+      console.log(changes);
+      for (let propName in changes) {
+        let chng = changes[propName];
+        let cur  = JSON.stringify(chng.currentValue);
+        let prev = JSON.stringify(chng.previousValue);
+
+        if (propName === "locationList" && cur !== prev){
+          console.log(this.locationList);
+          this.duberProductSearchService.getProductsFromStore(this.locationList[0].id, this.budget);
+
+        }
+
       }
+
     }
 }

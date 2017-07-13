@@ -68,15 +68,10 @@ export class DuberLocationService{
     return returnArray;
   }
 
-  getStoresCloseBy(lat, long,  city,zipcode, storeList){
-    var filterArray= [];
-
-    this.getStoreByZipcode(zipcode, storeList, filterArray);
-    this.getStoreByCity(city, storeList, filterArray);
-
-    var destination_query = `${filterArray[0].address} , ${filterArray[0].city}`;
-    for (var _i = 1; _i < filterArray.length; _i++){
-      destination_query = destination_query + `| ${filterArray[_i].address} , ${filterArray[_i].city}`;
+  getStoresCloseBy(lat, long, storeList){
+  var destination_query = `${storeList[0].address} , ${storeList[0].city}`;
+    for (var _i = 1; _i < storeList.length; _i++){
+      destination_query = destination_query + `| ${storeList[_i].address} , ${storeList[_i].city}`;
     }
     var url =  "https://maps.googleapis.com/maps/api/distancematrix/json?";
 
@@ -84,20 +79,23 @@ export class DuberLocationService{
     params.set('units', 'imperial');
     params.set('origins', lat + ',' + long);
     params.set('destinations', destination_query);
-    params.set('key', 'AIzaSyABFzbmnvMJT_r9a7OaHLD7Z5oTeHkvyyo');
-    return this.http.get(url, {search:params}).toPromise().then(response=>this.getStoresinmiles(response.json(),filterArray));
+    //params.set('key', 'AIzaSyABFzbmnvMJT_r9a7OaHLD7Z5oTeHkvyyo');
+    params.set('key', 'AIzaSyDrTazg1rtRSSLzG3xS2FR8APPiOQusMXM');
+    params.set('key', 'AIzaSyAgCTw4koEJNM5tc4i3GZyOeH3cyJm3Rgs');
+    return this.http.get(url, {search:params}).toPromise().then(response=>{
+
+    return this.getStoresinmiles(response.json(),storeList);
+    });
   }
 
   getStoreByZipcode(zipcode, storeList,filterArray){
 
     for (let store of storeList){
-      if(filterArray.length >=25){
-        return;
-      }
-
+    if(filterArray.length >=25){
+      return;
+    }
 
       if (store.zipcode == zipcode){
-
         filterArray.push(store);
       }
     }
@@ -124,16 +122,20 @@ export class DuberLocationService{
     var returnArray = [];
 
     for (var _i =0; _i < storeList.length; _i++){
+
       if(returnArray.length >=3){
 
         return returnArray;
       }
+
       if (response.rows[0].elements[_i].distance.value < 32187){
 
         returnArray.push(storeList[_i]);
       }
 
+
     }
+
     return returnArray;
 
   }
