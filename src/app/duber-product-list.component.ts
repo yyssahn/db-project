@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 import { DuberProductSearchService } from './duber-product-search.service';
 
 
+import { Product } from './product';
+
 @Component({
   selector:'db-product-list',
   template: `{{ 'hello' }}`
@@ -15,11 +17,16 @@ export class DuberProductList{
     oldLocationList;
     storeListSize;
     storeListCount;
-
+    aProduct: Product;
+    productList : Product[];
     constructor(
       private duberProductSearchService : DuberProductSearchService){
     }
 
+    ngOnInit(){
+      this.aProduct = {name:"ddd",price:2,address:"2",city:"d",thc:2};
+      console.log(this.aProduct);
+    }
 
     ngOnChanges(changes) {
       console.log(changes);
@@ -30,7 +37,8 @@ export class DuberProductList{
 
         if (propName === "locationList" && cur !== prev){
           console.log(this.locationList);
-          this.duberProductSearchService.getProductsFromStore(this.locationList[0].id, this.budget);
+          console.log(budget);
+          this.duberProductSearchService.getProductsFromStore(this.locationList[0], this.budget).then(result=>result);
 
         }
 
