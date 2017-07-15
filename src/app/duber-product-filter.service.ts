@@ -15,17 +15,29 @@ export class DuberProductFilterService{
       budget -= temp.price;
       filteredList.push(temp);
     }
-    while(budget > 0){
-      let temp = this.findMaxValue(totalProductList);
-
+    let temp = this.findMaxValue(totalProductList);
+    while (budget > 0){
+    let temp = this.findMaxValue(totalProductList);
+    if((budget - temp.price) <0){
+        break;
+    }else {
+        filteredList.push(temp);
+        budget -= temp.price;
+        }
     }
-    console.log(filteredList);
-    console.log(budget);
     return filteredList;
   }
 
   findMaxValue(totalProductList){
-    return null;
+    let max = totalProductList[0][0];
+    let maxPosition = 0;
+    for (let _i = 0; _i < totalProductList.length-1; _i++){
+      if (totalProductList[_i+1][0].thc_value > max.thc_value){
+        max = totalProductList[_i+1][0];
+        maxPosition = _i+1;
+      }
+    }
+    return totalProductList[maxPosition].shift();
   }
 
 }

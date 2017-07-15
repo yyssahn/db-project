@@ -19,6 +19,7 @@ export class DuberProductList{
     storeListCount;
     aProduct: Product;
     productList : Product[];
+    searchBooelean;
     totalProductList : Product[][];
     constructor(
       private duberProductSearchService : DuberProductSearchService,
@@ -26,15 +27,19 @@ export class DuberProductList{
     }
 
     ngOnInit(){
+        this.searchBoolean = false;
     }
 
     ngOnChanges(changes) {
       console.log(changes);
       for (let propName in changes) {
+
         let chng = changes[propName];
         let cur  = JSON.stringify(chng.currentValue);
         let prev = JSON.stringify(chng.previousValue);
         if (propName === "locationList" && cur !== prev){
+          this.searchBoolean = true;
+          console.log(this.searchBoolean);
           console.log(this.locationList);
           console.log(this.budget);
           this.storeListSize = this.locationList.length;
@@ -58,10 +63,12 @@ export class DuberProductList{
     }
 
     ngDoCheck(){
-      if (this.storeListSize === this.storeListCount){
+      if (this.storeListSize === this.storeListCount && this.searchBoolean){
+        console.log(searchBoolean);
+
         console.log(this.totalProductList);
         this.productList = this.duberProductFilterService.getHighestTHC(this.totalProductList, this.budget);
-
+        console.log(this.productList);
       }
 
     }

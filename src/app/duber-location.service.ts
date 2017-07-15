@@ -55,13 +55,15 @@ export class DuberLocationService{
     var address;
     var city;
     var zipcode;
+    console.log(response);
     for (let store of response){
       if(store.address!="Unknown" && store.zip_code!="" && !(store.zip_code === null)){
         id = store.id;
         address = store.address;
         city = store.city;
         zipcode = store.zip_code;
-        returnArray.push({"id":id,"address":address,"city":city , "zipcode":zipcode});
+        name = store.name;
+        returnArray.push({"id":id,"address":address,"city":city , "zipcode":zipcode, "name": name});
       }
     }
 
