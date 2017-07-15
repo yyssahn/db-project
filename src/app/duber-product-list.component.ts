@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DuberProductSearchService } from './duber-product-search.service';
-
+import { DuberProductFilterService } from './duber-product-filter.service';
 
 import { Product } from './product';
 
@@ -19,13 +19,13 @@ export class DuberProductList{
     storeListCount;
     aProduct: Product;
     productList : Product[];
+    totalProductList : Product[][];
     constructor(
-      private duberProductSearchService : DuberProductSearchService){
+      private duberProductSearchService : DuberProductSearchService,
+      private duberProductFilterService : DuberProductFilterService){
     }
 
     ngOnInit(){
-      this.aProduct = {name:"ddd",price:2,address:"2",city:"d",thc:2};
-      console.log(this.aProduct);
     }
 
     ngOnChanges(changes) {
@@ -34,13 +34,33 @@ export class DuberProductList{
         let chng = changes[propName];
         let cur  = JSON.stringify(chng.currentValue);
         let prev = JSON.stringify(chng.previousValue);
-
         if (propName === "locationList" && cur !== prev){
           console.log(this.locationList);
-          console.log(budget);
-          this.duberProductSearchService.getProductsFromStore(this.locationList[0], this.budget).then(result=>result);
-
+          console.log(this.budget);
+          this.storeListSize = this.locationList.length;
+          this.storeListCount = 0;
+          this.totalProductList = [];
+          for (let store of this.locationList){
+              this.duberProductSearchService.getProductsFromStore(store, this.budget).then(result=>{
+              result = result.sort(
+                function(x,y){
+                  return y.thc_value - x.thc_value;
+                }
+              );
+              this.totalProductList.push(result);
+              this.storeListCount++;
+            });
+          }
         }
+
+      }
+
+    }
+
+    ngDoCheck(){
+      if (this.storeListSize === this.storeListCount){
+        console.log(this.totalProductList);
+        this.productList = this.duberProductFilterService.getHighestTHC(this.totalProductList, this.budget);
 
       }
 

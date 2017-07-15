@@ -4,4 +4,5 @@ export class Product{
   address : string;
   city : string;
   thc : number;
+  thc_value : number;
 }

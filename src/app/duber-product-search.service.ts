@@ -24,26 +24,23 @@ export class DuberProductSearchService{
     return this.http.get(flowerurl).toPromise().then(result=>{
       flowerList = this.organizeFlowerProducts(result.json(),location.address, location.city,budget);
       return this.http.get(prerollurl).toPromise().then(result=>{
-        this.organizePreRollProducts(result.json(), location.address, location.city, budget, flowerList);
+        return this.organizePreRollProducts(result.json(), location.address, location.city, budget, flowerList) as Product[];
       });
     });
 
   }
 
   organizeFlowerProducts(result, address, city,budget){
-      console.log(result);
-      console.log(budget);
       var productList = [];
       for (let item of result.products.items){
         if (item.price<=budget){
           //productList.push(item);
           this.pushtoList(productList, item, address, city);
         }else{
-          console.log(productList);
+
           return productList;
         }
       }
-      console.log(productList);
       return productList;
   }
 
@@ -51,42 +48,58 @@ export class DuberProductSearchService{
   pushtoList(productList,product, storeAddr,storeCity){
     var length = productList.length;
     if (length ===0 ){
-      productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0]});
+      productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0],thc_value : (product.thc_range[0] / product.price)});
     }else{
       if (product.price === productList[length-1].price){
         if(product.thc_range[0]>productList[length-1].thc){
-          productList[length-1] = {name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0]};
+          productList[length-1] = {name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0], thc_value : (product.thc_range[0] / product.price)};
         }
       }else{
-        productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0]});
+        productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0] , thc_value : (product.thc_range[0] / product.price)});
       }
     }
 
   }
 
   organizePreRollProducts(result, address, city, budget, flowerList){
-    console.log("organizePreroll");
     for (let item of result.products.items){
       if (item.price<=budget){
         this.updateListWithRolls(flowerList, item, address, city);
       }else{
-      console.log(flowerList);
+
       return flowerList;
       }
     }
-    console.log(flowerList);
-    return productList;
+
+    return flowerList;
   }
 
-  updateListWithRolls(flowerList, item, address, city){
+  updateListWithRolls(flowerList, item, storeAddr, storeCity){
+    if (flowerList[0].price > item.price){
+      flowerList.splice(0,0,{name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price)});
+      return;
+    }
+    if (flowerList[flowerList.length -1].price < item.price){
+
+      flowerList.push({name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price)});
+    }
     for (var _i =0; _i<flowerList.length;_i++){
+
       if (flowerList[_i].price === item.price){
-        if(item.thc_range[0]>flowerList[_i]){
-          flowerList[_i]  = {name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0]};
+        if(item.thc_range[0]>flowerList[_i].thc){
+
+          flowerList[_i]  = {name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price)};
           return;
         }
 
 
+      }
+      if(_i < flowerList.length-1) {
+        if (item.price>flowerList[_i].price && flowerList[_i+1].price>item.price){
+
+          flowerList.splice(_i+1, 0, {name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0],thc_value : (item.thc_range[0] / item.price)});
+          return;
+        }
       }
 
     }

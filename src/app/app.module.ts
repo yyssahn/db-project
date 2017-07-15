@@ -9,7 +9,7 @@ import { DuberProductList } from './duber-product-list.component';
 
 import { DuberLocationService } from './duber-location.service';
 import { DuberProductSearchService } from './duber-product-search.service';
-
+import { DuberProductFilterService } from './duber-product-filter.service';
 
 
 @NgModule({
@@ -26,7 +26,8 @@ import { DuberProductSearchService } from './duber-product-search.service';
    ],
    providers: [
     DuberLocationService,
-    DuberProductSearchService
+    DuberProductSearchService,
+    DuberProductFilterService
    ],
   bootstrap:    [ AppComponent ]
 })
