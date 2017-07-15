@@ -24,7 +24,7 @@ export class DuberProductFilterService{
     return filteredList;
   }
 
-  findMaxValue(){
+  findMaxValue(totalProductList){
     return null;
   }
 
