@@ -1,0 +1,12 @@
+
+
+
+<div *ngIf="productList">
+    <div class="container">
+    <div *ngFor="let product of productList">
+        <div class="row">
+        <db-product-list-item [product]="product"></db-product-list-item>
+        <div class="row">
+    </div>
+  </div>
+</div>

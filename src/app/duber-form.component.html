@@ -2,11 +2,14 @@
   <form class="duber-form"
   [formGroup]="duberForm"
   (ngSubmit)="onSubmit(duberForm.value)">
+    <span class="zipcode-section">
       <label for="zipcode">Zip Code </label>
-      <input type="text" name="zipcode" id="zipcode" formControlName="zipcode" >
-
+      <input type="text" class="input" name="zipcode" id="zipcode" formControlName="zipcode" >
+    </span>
+    <span class="zipcode-section">
       <label for="Budget">Budget </label>
-      <input type="text" name="budget" id="budget" formControlName="budget">
+      <input type="text" class="input" name="budget" id="budget" formControlName="budget">
+    </span>
 
   <button class="submit-button" [disabled]="!duberForm.valid">Search</button>
   </form>
@@ -23,18 +26,9 @@
     Your budget field is empty
   </div>
 
-  <div *ngIf="state">
-    {{ state }}
-  </div>
-  <div *ngIf="lat">
-    {{ lat }}
-  </div>
-  <div *ngIf="long">
-    {{ long }}
-  </div>
 
 
 </div>
 <div *ngIf="dummyCloseStoreList">
-<db-product-list [locationList]="dummyCloseStoreList" [budget]="50"></db-product-list>
+<db-product-list [locationList]="closeStoreList" [budget]="50"></db-product-list>
 </div>

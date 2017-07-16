@@ -22,9 +22,9 @@ export class DuberProductSearchService{
     var flowerList;
 
     return this.http.get(flowerurl).toPromise().then(result=>{
-      flowerList = this.organizeFlowerProducts(result.json(),location.address, location.city,budget);
+      flowerList = this.organizeFlowerProducts(result.json(),location, location.city,budget);
       return this.http.get(prerollurl).toPromise().then(result=>{
-        return this.organizePreRollProducts(result.json(), location.address, location.city, budget, flowerList) as Product[];
+        return this.organizePreRollProducts(result.json(), location, location.city, budget, flowerList) as Product[];
       });
     });
 
@@ -32,6 +32,7 @@ export class DuberProductSearchService{
 
   organizeFlowerProducts(result, address, city,budget){
       var productList = [];
+      console.log(result);
       for (let item of result.products.items){
         if (item.price<=budget){
           //productList.push(item);
@@ -48,14 +49,14 @@ export class DuberProductSearchService{
   pushtoList(productList,product, storeAddr,storeCity){
     var length = productList.length;
     if (length ===0 ){
-      productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0],thc_value : (product.thc_range[0] / product.price)});
+      productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0],thc_value : (product.thc_range[0] / product.price) });
     }else{
       if (product.price === productList[length-1].price){
         if(product.thc_range[0]>productList[length-1].thc){
-          productList[length-1] = {name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0], thc_value : (product.thc_range[0] / product.price)};
+          productList[length-1] = {name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0], thc_value : (product.thc_range[0] / product.price) };
         }
       }else{
-        productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0] , thc_value : (product.thc_range[0] / product.price)});
+        productList.push({name:product.name, price:product.price, address: storeAddr, city:storeCity, thc:product.thc_range[0] , thc_value : (product.thc_range[0] / product.price) });
       }
     }
 
@@ -76,19 +77,19 @@ export class DuberProductSearchService{
 
   updateListWithRolls(flowerList, item, storeAddr, storeCity){
     if (flowerList[0].price > item.price){
-      flowerList.splice(0,0,{name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price)});
+      flowerList.splice(0,0,{name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price) });
       return;
     }
     if (flowerList[flowerList.length -1].price < item.price){
 
-      flowerList.push({name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price)});
+      flowerList.push({name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price) });
     }
     for (var _i =0; _i<flowerList.length;_i++){
 
       if (flowerList[_i].price === item.price){
         if(item.thc_range[0]>flowerList[_i].thc){
 
-          flowerList[_i]  = {name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price)};
+          flowerList[_i]  = {name:item.name, price:item.price, address: storeAddr, city:storeCity, thc:item.thc_range[0], thc_value : (item.thc_range[0] / item.price) };
           return;
         }
 

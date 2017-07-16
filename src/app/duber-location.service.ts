@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, URLSearchParams } from '@angular/http';
+import { Http, Jsonp, URLSearchParams, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
@@ -55,6 +55,8 @@ export class DuberLocationService{
     var address;
     var city;
     var zipcode;
+    var name;
+
     console.log(response);
     for (let store of response){
       if(store.address!="Unknown" && store.zip_code!="" && !(store.zip_code === null)){
@@ -84,6 +86,10 @@ export class DuberLocationService{
     //params.set('key', 'AIzaSyABFzbmnvMJT_r9a7OaHLD7Z5oTeHkvyyo');
     params.set('key', 'AIzaSyDrTazg1rtRSSLzG3xS2FR8APPiOQusMXM');
     params.set('key', 'AIzaSyAgCTw4koEJNM5tc4i3GZyOeH3cyJm3Rgs');
+    let headers = new Headers();
+    headers.append("Access-Control-Allow-Origin", '*');
+    headers.append("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT, DELETE");
+
     return this.http.get(url, {search:params}).toPromise().then(response=>{
 
     return this.getStoresinmiles(response.json(),storeList);

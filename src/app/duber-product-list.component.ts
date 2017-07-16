@@ -6,7 +6,8 @@ import { Product } from './product';
 
 @Component({
   selector:'db-product-list',
-  template: `{{ 'hello' }}`
+  templateUrl: './duber-product-list.component.html',
+  styleUrls: ['./duber-product-list.component.css']
 })
 
 export class DuberProductList{
@@ -19,7 +20,7 @@ export class DuberProductList{
     storeListCount;
     aProduct: Product;
     productList : Product[];
-    searchBooelean;
+    searchBoolean = false;
     totalProductList : Product[][];
     constructor(
       private duberProductSearchService : DuberProductSearchService,
@@ -27,11 +28,11 @@ export class DuberProductList{
     }
 
     ngOnInit(){
-        this.searchBoolean = false;
+
     }
 
     ngOnChanges(changes) {
-      console.log(changes);
+
       for (let propName in changes) {
 
         let chng = changes[propName];
@@ -39,9 +40,6 @@ export class DuberProductList{
         let prev = JSON.stringify(chng.previousValue);
         if (propName === "locationList" && cur !== prev){
           this.searchBoolean = true;
-          console.log(this.searchBoolean);
-          console.log(this.locationList);
-          console.log(this.budget);
           this.storeListSize = this.locationList.length;
           this.storeListCount = 0;
           this.totalProductList = [];
@@ -64,10 +62,15 @@ export class DuberProductList{
 
     ngDoCheck(){
       if (this.storeListSize === this.storeListCount && this.searchBoolean){
-        console.log(searchBoolean);
-
-        console.log(this.totalProductList);
         this.productList = this.duberProductFilterService.getHighestTHC(this.totalProductList, this.budget);
+        this.productList.sort(function(x,y){
+          if (x.address.name > y.address.name){
+            return 1;
+          }else if (y.address.name > x.address.name){
+            return -1;
+          }else return 0;
+        });
+        this.searchBoolean=false;
         console.log(this.productList);
       }
 

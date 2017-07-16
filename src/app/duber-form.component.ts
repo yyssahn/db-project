@@ -23,10 +23,11 @@ export class DuberFormComponent {
   filteredStoreList;
   oldFilteredStoreList;
   budget;
+
   dummyCloseStoreList = [
-  { address:"15029 Aurora Ave N", city:"Shoreline",id:"c66d4e8c-3afd-6734-5661-bb7dbfd72f48",zipcode:"98133"},
-  {address:"12001 Aurora Ave N", city: "Seattle" , id:"5f198700-ef9c-a3e2-57b6-0f6a7c829b63", zipcode:"98133"},
-  {address:"12230 Aurora Ave North",city:"Seattle",id:"4518b723-f46b-44bc-92e7-4724bef6fa34",zipcode:98133}
+  {address:"15029 Aurora Ave N", city:"Shoreline",id:"c66d4e8c-3afd-6734-5661-bb7dbfd72f48",zipcode:98133, name:"Dockside Cannabis - Shoreline"},
+  {address:"12001 Aurora Ave N", city: "Seattle" , id:"5f198700-ef9c-a3e2-57b6-0f6a7c829b63", zipcode:98133,name:"Fweedom Cannabis - Seattle"},
+  {address:"12230 Aurora Ave North",city:"Seattle",id:"4518b723-f46b-44bc-92e7-4724bef6fa34",zipcode:98133,name:"Mary's on Aurora"}
   ];
 
   constructor(private formBuilder: FormBuilder,
@@ -38,6 +39,8 @@ export class DuberFormComponent {
     this.state = "";
     this.lat = "";
     this.zipcode = "";
+
+    console.log(this.dummyCloseStoreList);
     this.duberForm = this.formBuilder.group({
       zipcode: this.formBuilder.control('',Validators.compose([
       Validators.required,
@@ -57,7 +60,6 @@ export class DuberFormComponent {
     ngDoCheck(){
 
       if(this.lat!==this.oldLat && this.long !==this.oldLong){
-
         this.oldLat = this.lat;
         this.oldLong = this.long;
         this.duberLocationService.getStoresByState(this.state).then(result=>   {
@@ -72,6 +74,7 @@ export class DuberFormComponent {
         console.log(this.filteredStoreList);
         this.storeList = null;
         this.duberLocationService.getStoresCloseBy(this.lat,this.long, this.filteredStoreList).then(result=> {
+          this.searched = true;
           this.closeStoreList = result;
           console.log(result);
         });
@@ -82,6 +85,7 @@ export class DuberFormComponent {
 
   onSubmit(value){
     this.budget = value.budget;
+
       this.duberLocationService.getState(value.zipcode).then(result=>{
 
         this.zipcode = value.zipcode;

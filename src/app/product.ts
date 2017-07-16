@@ -1,7 +1,7 @@
 export class Product{
   name: string;
   price: number;
-  address : string;
+  address : any;
   city : string;
   thc : number;
   thc_value : number;

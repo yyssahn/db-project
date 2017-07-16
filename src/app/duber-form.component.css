@@ -3,28 +3,34 @@
   border: 1px solid lightgrey;
   padding:5px;
   color:#2B8425;
+  display: flex;
+  justify-content: space-between;
 }
 
 
 .container {
   background-color: rgba(0,0,0,0.07);
-  margin:10%;
+  width:80%;
+  margin:auto;
   padding:5px;
 }
 .zipcode-section{
-  float:left;
-  width:40%;
+  flex-basis: 35%;
+
+  display:flex;
 }
 .budget-section{
-  float:left;
-  width:40%;
+  flex-basis:35%;
+  display:flex;
+}
+.input{
+  flex:1;
 }
 
 .submit-button{
   background-color: #2B8425;
   color:white;
-  height:21px;
-  width:20%;
   border:0;
   padding:0;
+  flex-basis:25%;
 }

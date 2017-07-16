@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent }  from './app.component';
 import { DuberFormComponent } from './duber-form.component';
 import { DuberProductList } from './duber-product-list.component';
+import { DuberProductListItem } from './duber-product-list-item.component';
 
 import { DuberLocationService } from './duber-location.service';
 import { DuberProductSearchService } from './duber-product-search.service';
@@ -22,7 +23,8 @@ import { DuberProductFilterService } from './duber-product-filter.service';
   declarations: [
     AppComponent,
     DuberFormComponent,
-    DuberProductList
+    DuberProductList,
+    DuberProductListItem
    ],
    providers: [
     DuberLocationService,

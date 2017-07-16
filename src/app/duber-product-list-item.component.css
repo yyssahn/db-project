@@ -1,0 +1,30 @@
+.db-item{
+  display: flex;
+}
+
+
+.product-name{
+  flex:1;
+  background-color: #2B8425;
+  color:white;
+  display:flex;
+}
+
+.product-name p {
+  margin: auto;
+  display:flex;
+}
+
+.product-info{
+  flex:3;
+  border-top: lightgrey 1px solid;
+  border-right: lightgrey 1px solid;
+  border-bottom: lightgrey 1px solid;
+}
+.price-value-info{
+  border-bottom: lightgrey 1px solid;
+  flex:1;
+}
+.location-info{
+  flex:1;
+}
