@@ -23,7 +23,7 @@ export class DuberFormComponent {
   filteredStoreList;
   oldFilteredStoreList;
   budget;
-
+  searched;
   dummyCloseStoreList = [
   {address:"15029 Aurora Ave N", city:"Shoreline",id:"c66d4e8c-3afd-6734-5661-bb7dbfd72f48",zipcode:98133, name:"Dockside Cannabis - Shoreline"},
   {address:"12001 Aurora Ave N", city: "Seattle" , id:"5f198700-ef9c-a3e2-57b6-0f6a7c829b63", zipcode:98133,name:"Fweedom Cannabis - Seattle"},
@@ -73,11 +73,14 @@ export class DuberFormComponent {
         this.oldFilteredStoreList = this.filteredStoreList;
         console.log(this.filteredStoreList);
         this.storeList = null;
+
         this.duberLocationService.getStoresCloseBy(this.lat,this.long, this.filteredStoreList).then(result=> {
-          this.searched = true;
           this.closeStoreList = result;
           console.log(result);
         });
+
+        //this.duberLocationService.getStoresCloseBy(this.lat, this.long, this.filteredStoreList);
+
       }
 
     }
@@ -96,5 +99,6 @@ export class DuberFormComponent {
         });
 
   }
+
 
 }

@@ -57,7 +57,7 @@ export class DuberLocationService{
     var zipcode;
     var name;
 
-    console.log(response);
+
     for (let store of response){
       if(store.address!="Unknown" && store.zip_code!="" && !(store.zip_code === null)){
         id = store.id;
@@ -73,12 +73,12 @@ export class DuberLocationService{
   }
 
   getStoresCloseBy(lat, long, storeList){
+    console.log(storeList);
   var destination_query = `${storeList[0].address} , ${storeList[0].city}`;
     for (var _i = 1; _i < storeList.length; _i++){
       destination_query = destination_query + `| ${storeList[_i].address} , ${storeList[_i].city}`;
     }
     var url =  "https://maps.googleapis.com/maps/api/distancematrix/json?";
-
     let params = new URLSearchParams();
     params.set('units', 'imperial');
     params.set('origins', lat + ',' + long);
@@ -87,13 +87,24 @@ export class DuberLocationService{
     params.set('key', 'AIzaSyDrTazg1rtRSSLzG3xS2FR8APPiOQusMXM');
     params.set('key', 'AIzaSyAgCTw4koEJNM5tc4i3GZyOeH3cyJm3Rgs');
     let headers = new Headers();
-    headers.append("Access-Control-Allow-Origin", '*');
-    headers.append("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT, DELETE");
+    headers.append("Access-Control-Allow-Headers", "Authorization");
+    headers.append("Access-Control-Allow-Origin", "*");
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    headers.append("Access-Control-Allow-Methods", "GET");
+
+    
+    /*
+    return this.jsonp.get(url,{search:params}).toPromise().then(response=>{
+      console.log(response);
+      //return this.getStoresinmiles(response,storeList);
+    });
+    */
 
     return this.http.get(url, {search:params}).toPromise().then(response=>{
 
-    return this.getStoresinmiles(response.json(),storeList);
+        return this.getStoresinmiles(response.json(),storeList);
     });
+
   }
 
   getStoreByZipcode(zipcode, storeList,filterArray){
@@ -126,7 +137,7 @@ export class DuberLocationService{
   }
 
   getStoresinmiles(response,storeList){
-
+    console.log(response);
     var returnArray = [];
 
     for (var _i =0; _i < storeList.length; _i++){
@@ -135,6 +146,7 @@ export class DuberLocationService{
 
         return returnArray;
       }
+
 
       if (response.rows[0].elements[_i].distance.value < 32187){
 
